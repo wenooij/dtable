@@ -60,6 +60,6 @@ func AppendBytes(w *bufio.Writer, x []byte) {
 	w.Write(x)
 }
 
-func AppendField(w *bufio.Writer, fieldNumber uint32, typeNum typeNum) {
-	AppendUvarint(w, uint64(fieldNumber)<<3|uint64(typeNum))
+func AppendField[T any](w *bufio.Writer, f Field[T]) {
+	AppendUvarint(w, uint64(f.FieldNumber)<<3|uint64(0))
 }

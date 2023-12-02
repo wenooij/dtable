@@ -1,12 +1,5 @@
 package dtable
 
-type Collection interface {
-	FirstTable() Table
-	EachTable(func(Table) bool)
-	PrefixTable(prefix []byte) Table
-	LastTable() Table
-}
-
 type Table interface {
 	FirstBlock() Block
 	Block(i int) Block
@@ -16,29 +9,46 @@ type Table interface {
 
 type Block interface {
 	PrevBlock() Block
-	ScanRecords(func(v any) bool)
+	ScanRecords(func(Consumer) bool)
 	NextBlock() Block
 }
 
+type Consumer interface {
+	Peek() (any, bool)
+	Advance()
+}
+
+type Transaction interface {
+	Revert()
+	Commit()
+}
+
 type Emitter interface {
+	Transaction
 	Emit(record any)
 }
 
-func ScanTable(t Table, fn func(any) bool) {
+type ConsumeEmitter interface {
+	Consumer
+	Emitter
+}
+
+func ScanTable(t Table, fn func(Consumer) bool) {
 	var stop bool
 	for b := t.FirstBlock(); b != nil && !stop; b = b.NextBlock() {
-		b.ScanRecords(func(v any) bool {
-			stop = !fn(v)
+		b.ScanRecords(func(c Consumer) bool {
+			stop = !fn(c)
 			return !stop
 		})
 	}
 }
 
-func Filter(e Emitter, t Table, fn func(any) bool) {
-	ScanTable(t, func(v any) bool {
-		if fn(v) {
-			e.Emit(v)
-		}
+func ProcessTable(e Emitter, t Table, fn func(ConsumeEmitter)) {
+	ScanTable(t, func(c Consumer) bool {
+		fn(struct {
+			Consumer
+			Emitter
+		}{c, e})
 		return true
 	})
 }
