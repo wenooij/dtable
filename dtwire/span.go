@@ -95,6 +95,7 @@ type String Bytes
 
 func (x *String) Scan(r Reader) error { return (*Bytes)(x).Scan(r) }
 func (x String) Put(w Writer) error   { return Bytes(x).Put(w) }
+func (x String) String() string       { return string(x) }
 
 type Span Bytes
 
