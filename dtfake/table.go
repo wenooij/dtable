@@ -9,6 +9,7 @@ import (
 
 type tableScanner struct {
 	*Table
+	b bytes.Buffer
 	p int
 }
 
@@ -16,8 +17,8 @@ func (t *tableScanner) Scan(v dtwire.Scanner) (err error) {
 	if len(t.records) <= t.p {
 		return io.EOF
 	}
-	var b bytes.Buffer
-	if err := t.records[t.p].Put(&b); err != nil {
+	t.b.Reset()
+	if err := t.records[t.p].Put(&t.b); err != nil {
 		return err
 	}
 	defer func() {
@@ -25,7 +26,7 @@ func (t *tableScanner) Scan(v dtwire.Scanner) (err error) {
 			t.p++
 		}
 	}()
-	return v.Scan(&b)
+	return v.Scan(&t.b)
 }
 
 // Table represents a fake Table in which dtwire primitives can be directly used.
