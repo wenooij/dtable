@@ -5,33 +5,6 @@ import (
 	"io"
 )
 
-type Bool bool
-
-func (b *Bool) Scan(r Reader) error {
-	bb, err := r.ReadByte()
-	if err != nil {
-		return err
-	}
-	switch bb {
-	case 0:
-		*b = false
-		return nil
-	case 1:
-		*b = true
-		return nil
-	default:
-		return ErrScan
-	}
-}
-
-func (x Bool) Put(w Writer) error {
-	var b byte
-	if x {
-		b = 1
-	}
-	return w.WriteByte(b)
-}
-
 type Uint64 uint64
 
 func (e *Uint64) Scan(r Reader) error {

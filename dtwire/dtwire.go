@@ -42,7 +42,7 @@ type Fixed interface {
 }
 
 type Delimited interface {
-	Bytes | String | Field | Span
+	Bytes | String
 }
 
 type Scalar interface {

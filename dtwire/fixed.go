@@ -17,6 +17,33 @@ func (b Byte) Put(w Writer) error {
 	return w.WriteByte(byte(b))
 }
 
+type Bool bool
+
+func (b *Bool) Scan(r Reader) error {
+	bb, err := r.ReadByte()
+	if err != nil {
+		return err
+	}
+	switch bb {
+	case 0:
+		*b = false
+		return nil
+	case 1:
+		*b = true
+		return nil
+	default:
+		return ErrScan
+	}
+}
+
+func (x Bool) Put(w Writer) error {
+	var b byte
+	if x {
+		b = 1
+	}
+	return w.WriteByte(b)
+}
+
 type Fixed32 uint32
 
 func (i *Fixed32) Scan(r Reader) error {

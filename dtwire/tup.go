@@ -1,13 +1,13 @@
 package dtwire
 
-type Tup2[T0, T1 Scalar] struct {
+type Tup2[T0, T1 Putter] struct {
 	T0 T0
 	T1 T1
 }
 
 func (a Tup2[T0, T1]) Put(w Writer) error {
-	any(a.T0).(Putter).Put(w)
-	return any(a.T1).(Putter).Put(w)
+	a.T0.Put(w)
+	return a.T1.Put(w)
 }
 
 func (a *Tup2[T0, T1]) Scan(r Reader) error {
@@ -15,16 +15,16 @@ func (a *Tup2[T0, T1]) Scan(r Reader) error {
 	return any(&a.T1).(Scanner).Scan(r)
 }
 
-type Tup3[T0, T1, T2 Scalar] struct {
+type Tup3[T0, T1, T2 Putter] struct {
 	T0 T0
 	T1 T1
 	T2 T2
 }
 
 func (a Tup3[T0, T1, T2]) Put(w Writer) error {
-	any(&a.T0).(Putter).Put(w)
-	any(&a.T1).(Putter).Put(w)
-	return any(&a.T2).(Putter).Put(w)
+	a.T0.Put(w)
+	a.T1.Put(w)
+	return a.T2.Put(w)
 }
 
 func (a *Tup3[T0, T1, T2]) Scan(r Reader) error {
