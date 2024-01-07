@@ -1,6 +1,8 @@
 package dtwire
 
-import "io"
+import (
+	"io"
+)
 
 type Seq[T Putter] []T
 
@@ -33,4 +35,11 @@ func (a Seq[T]) Size() uint64 {
 		n += e.Size()
 	}
 	return n
+}
+
+func (a Seq[T]) PutText(w Writer) error {
+	for _, e := range a {
+		PutText(w, e)
+	}
+	return nil
 }

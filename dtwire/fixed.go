@@ -1,6 +1,9 @@
 package dtwire
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Byte byte
 
@@ -18,6 +21,8 @@ func (b Byte) Put(w Writer) error {
 }
 
 func (Byte) Size() uint64 { return 1 }
+
+func (b Byte) PutText(w Writer) error { fmt.Fprintf(w, "<byte x=%x />\n", b); return nil }
 
 type Bool bool
 
@@ -48,6 +53,8 @@ func (x Bool) Put(w Writer) error {
 
 func (x Bool) Size() uint64 { return 1 }
 
+func (b Bool) PutText(w Writer) error { fmt.Fprintf(w, "<%v />\n", b); return nil }
+
 type Fixed32 uint32
 
 func (i *Fixed32) Scan(r Reader) error {
@@ -70,6 +77,8 @@ func (x Fixed32) Put(w Writer) error {
 }
 
 func (x Fixed32) Size() uint64 { return 4 }
+
+func (x Fixed32) PutText(w Writer) error { fmt.Fprintf(w, "<fixed32 x=%d />\n", x); return nil }
 
 type Fixed64 uint64
 
@@ -102,6 +111,8 @@ func (x Fixed64) Put(w Writer) error {
 
 func (x Fixed64) Size() uint64 { return 8 }
 
+func (x Fixed64) PutText(w Writer) error { fmt.Fprintf(w, "<fixed64 x=%d />\n", x); return nil }
+
 type Float32 float32
 
 func (x *Float32) Scan(r Reader) error {
@@ -120,6 +131,8 @@ func (x Float32) Put(w Writer) error {
 
 func (x Float32) Size() uint64 { return 4 }
 
+func (x Float32) PutText(w Writer) error { fmt.Fprintf(w, "<float32 x=%f />\n", x); return nil }
+
 type Float64 float64
 
 func (x *Float64) Scan(r Reader) error {
@@ -137,3 +150,5 @@ func (x Float64) Put(w Writer) error {
 }
 
 func (x Float64) Size() uint64 { return 8 }
+
+func (x Float64) PutText(w Writer) error { fmt.Fprintf(w, "<float64 x=%f />\n", x); return nil }

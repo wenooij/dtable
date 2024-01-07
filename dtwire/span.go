@@ -1,22 +1,33 @@
 package dtwire
 
+import "fmt"
+
 type Span[T Putter] struct {
-	N     Uint64
-	Value T
+	n    Uint64
+	elem T
 }
 
 func SpanOf[T Putter](v T) Span[T] {
-	return Span[T]{N: Uint64(v.Size()), Value: v}
+	return Span[T]{n: Uint64(v.Size()), elem: v}
 }
 
+func (x Span[T]) Elem() T { return x.elem }
+
 func (x *Span[T]) Scan(r Reader) error {
-	x.N.Scan(r)
-	return any(&x.Value).(Scanner).Scan(r)
+	x.n.Scan(r)
+	return any(&x.elem).(Scanner).Scan(r)
 }
 
 func (x Span[T]) Put(w Writer) error {
-	x.N.Put(w)
-	return x.Value.Put(w)
+	x.n.Put(w)
+	return x.elem.Put(w)
 }
 
-func (x Span[T]) Size() uint64 { return x.N.Size() + x.Value.Size() }
+func (x Span[T]) Size() uint64 { return x.n.Size() + x.elem.Size() }
+
+func (x Span[T]) PutText(w Writer) error {
+	fmt.Fprintf(w, "<span size=%d>\n", x.n)
+	PutText(w, x.elem)
+	fmt.Fprintln(w, "</span>")
+	return nil
+}

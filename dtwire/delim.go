@@ -1,6 +1,7 @@
 package dtwire
 
 import (
+	"fmt"
 	"io"
 	"math"
 )
@@ -27,12 +28,21 @@ func (x Bytes) Put(w Writer) error {
 
 func (x Bytes) Size() uint64 { return Uint64(len(x)).Size() + raw(x).Size() }
 
+func (x Bytes) PutText(w Writer) error {
+	fmt.Fprintf(w, "<bytes size=%d x=%x />\n", len(x), x)
+	return nil
+}
+
 type String Bytes
 
 func (x *String) Scan(r Reader) error { return (*Bytes)(x).Scan(r) }
 func (x String) Put(w Writer) error   { return Bytes(x).Put(w) }
 func (x String) Size() uint64         { return Bytes(x).Size() }
 func (x String) String() string       { return string(x) }
+func (x String) PutText(w Writer) error {
+	fmt.Fprintf(w, "<string size=%d x=%q />\n", len(x), string(x))
+	return nil
+}
 
 type raw []byte
 

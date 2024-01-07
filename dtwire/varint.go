@@ -2,6 +2,7 @@ package dtwire
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -42,6 +43,11 @@ func (x Uint64) Size() uint64 {
 	return n
 }
 
+func (x Uint64) PutText(w Writer) error {
+	fmt.Fprintf(w, "<uint x=%d />\n", x)
+	return nil
+}
+
 type Int64 int64
 
 func (i *Int64) Scan(r Reader) error {
@@ -71,4 +77,9 @@ func (x Int64) Size() uint64 {
 		ux = ^ux
 	}
 	return ux.Size()
+}
+
+func (x Int64) PutText(w Writer) error {
+	fmt.Fprintf(w, "<int x=%d />\n", x)
+	return nil
 }
