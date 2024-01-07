@@ -33,6 +33,15 @@ func (x Uint64) Put(w Writer) error {
 	return w.WriteByte(byte(x))
 }
 
+func (x Uint64) Size() uint64 {
+	n := uint64(1)
+	for i := 0; x >= 0x80; i++ {
+		n++
+		x >>= 7
+	}
+	return n
+}
+
 type Int64 int64
 
 func (i *Int64) Scan(r Reader) error {
@@ -54,4 +63,12 @@ func (x Int64) Put(w Writer) error {
 		ux = ^ux
 	}
 	return ux.Put(w)
+}
+
+func (x Int64) Size() uint64 {
+	ux := Uint64(x) << 1
+	if x < 0 {
+		ux = ^ux
+	}
+	return ux.Size()
 }

@@ -25,6 +25,7 @@ type Scanner interface {
 }
 
 type Putter interface {
+	Size() uint64
 	Put(Writer) error
 }
 

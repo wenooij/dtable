@@ -17,6 +17,8 @@ func (b Byte) Put(w Writer) error {
 	return w.WriteByte(byte(b))
 }
 
+func (Byte) Size() uint64 { return 1 }
+
 type Bool bool
 
 func (b *Bool) Scan(r Reader) error {
@@ -44,6 +46,8 @@ func (x Bool) Put(w Writer) error {
 	return w.WriteByte(b)
 }
 
+func (x Bool) Size() uint64 { return 1 }
+
 type Fixed32 uint32
 
 func (i *Fixed32) Scan(r Reader) error {
@@ -64,6 +68,8 @@ func (x Fixed32) Put(w Writer) error {
 	w.WriteByte(byte(x >> 16))
 	return w.WriteByte(byte(x >> 24))
 }
+
+func (x Fixed32) Size() uint64 { return 4 }
 
 type Fixed64 uint64
 
@@ -94,6 +100,8 @@ func (x Fixed64) Put(w Writer) error {
 	return w.WriteByte(byte(x >> 56))
 }
 
+func (x Fixed64) Size() uint64 { return 8 }
+
 type Float32 float32
 
 func (x *Float32) Scan(r Reader) error {
@@ -110,6 +118,8 @@ func (x Float32) Put(w Writer) error {
 	return i.Put(w)
 }
 
+func (x Float32) Size() uint64 { return 4 }
+
 type Float64 float64
 
 func (x *Float64) Scan(r Reader) error {
@@ -125,3 +135,5 @@ func (x Float64) Put(w Writer) error {
 	i := Fixed64(math.Float64bits(float64(x)))
 	return i.Put(w)
 }
+
+func (x Float64) Size() uint64 { return 8 }

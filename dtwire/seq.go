@@ -26,3 +26,11 @@ func (a *Seq[T]) Scan(r Reader) error {
 		b = append(b, e)
 	}
 }
+
+func (a Seq[T]) Size() uint64 {
+	var n uint64
+	for _, e := range a {
+		n += e.Size()
+	}
+	return n
+}

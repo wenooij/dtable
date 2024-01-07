@@ -25,10 +25,13 @@ func (x Bytes) Put(w Writer) error {
 	return err
 }
 
+func (x Bytes) Size() uint64 { return Uint64(len(x)).Size() + raw(x).Size() }
+
 type String Bytes
 
 func (x *String) Scan(r Reader) error { return (*Bytes)(x).Scan(r) }
 func (x String) Put(w Writer) error   { return Bytes(x).Put(w) }
+func (x String) Size() uint64         { return Bytes(x).Size() }
 func (x String) String() string       { return string(x) }
 
 type raw []byte
@@ -63,6 +66,8 @@ func (x raw) Put(w Writer) error {
 	_, err := w.Write(x)
 	return err
 }
+
+func (x raw) Size() uint64 { return uint64(len(x)) }
 
 type limitedReader struct {
 	r Reader
